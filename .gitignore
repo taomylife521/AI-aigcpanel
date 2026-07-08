@@ -4,3 +4,8 @@ dist-*/
 node_modules/
 package-lock.json
 _temp/
+
+# OpenCode
+DEV_*.md
+/.agents
+/AGENTS.md

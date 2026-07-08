@@ -281,8 +281,20 @@ watch(
                                                 style="border: 1px solid #ccc"
                                             />
                                         </div>
-                                        <div class="flex-grow">
+                                        <div
+                                            class="flex-grow flex items-center gap-1"
+                                        >
                                             {{ m.name }}
+                                            <icon-eye
+                                                v-if="m.caps?.vision"
+                                                :title="$t('model.capVision')"
+                                                class="text-blue-500 text-sm"
+                                            />
+                                            <icon-tool
+                                                v-if="m.caps?.tools"
+                                                :title="$t('model.capTools')"
+                                                class="text-green-500 text-sm"
+                                            />
                                         </div>
                                         <div
                                             v-if="

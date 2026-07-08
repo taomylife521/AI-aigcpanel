@@ -8,6 +8,7 @@ import { Dialog } from "../../../lib/dialog";
 import { t } from "../../../lang";
 import MEmpty from "../../../components/common/MEmpty.vue";
 import MLoading from "../../../components/common/MLoading.vue";
+import ListerTop from "../../../components/common/ListerTop.vue";
 
 const visible = ref(false);
 
@@ -32,6 +33,20 @@ const doDelete = async (record: StorageRecord) => {
     await Dialog.confirm(t("common.deleteConfirm"));
     await StorageService.delete(record);
     await doRefresh();
+};
+const doExport = async (record: StorageRecord) => {
+    try {
+        const savePath = await window.$mapi.file.openSave({
+            defaultPath: record.title + ".wav",
+        });
+        if (!savePath) return;
+        await window.$mapi.file.copy(record.content.url, savePath, {
+            isDataPath: false,
+        });
+        Dialog.tipSuccess("导出成功");
+    } catch (error) {
+        Dialog.tipError(`导出失败: ${(error as Error).message || error}`);
+    }
 };
 const doSelect = (record: StorageRecord) => {
     emit("select", record.id as number);
@@ -61,21 +76,21 @@ onMounted(async () => {
         title-align="start"
     >
         <template #title>
-            <div class="flex items-center">
-                <div class="font-bold mr-2">
-                    {{ $t("voice.timbreManage") }}
-                </div>
-                <div class="flex items-center">
-                    <a-button @click="editDialog?.add()">
-                        <template #icon>
-                            <icon-plus />
-                        </template>
-                        {{ $t("common.add") }}
-                    </a-button>
-                </div>
-            </div>
+            <div class="font-bold">{{ $t("voice.timbreManage") }}</div>
         </template>
         <div style="height: calc(100vh - 15rem)">
+            <ListerTop
+                :loading="loading"
+                :total="records.length"
+                @refresh="doRefresh"
+            >
+                <template #actions>
+                    <a-button @click="editDialog?.add()">
+                        <template #icon><icon-plus /></template>
+                        {{ $t("common.add") }}
+                    </a-button>
+                </template>
+            </ListerTop>
             <m-empty v-if="!records.length && !loading" />
             <m-loading v-else-if="!records.length && loading" page />
             <div v-for="r in records">
@@ -107,6 +122,11 @@ onMounted(async () => {
                             <a-button @click="doSelect(r)" class="mr-2">
                                 <template #icon>
                                     <icon-check />
+                                </template>
+                            </a-button>
+                            <a-button @click="doExport(r)" class="mr-2">
+                                <template #icon>
+                                    <icon-export />
                                 </template>
                             </a-button>
                             <a-button @click="doDelete(r)" class="mr-2">

@@ -77,6 +77,7 @@ export const modelStore = defineStore("model", {
                                 name: m.name,
                                 group: m.group,
                                 types: ["text"],
+                                caps: (m as any).caps || {},
                                 enabled: false,
                             } as any;
                         }),
@@ -134,6 +135,9 @@ export const modelStore = defineStore("model", {
                                     existingModel.name = model.name;
                                     existingModel.group = model.group;
                                     existingModel.types = model.types;
+                                    if ("caps" in model) {
+                                        existingModel.caps = model.caps || {};
+                                    }
                                     existingModel.enabled =
                                         model.enabled || false;
                                 } else {
@@ -142,7 +146,8 @@ export const modelStore = defineStore("model", {
                                         provider: providerId,
                                         name: model.name,
                                         group: model.group,
-                                        types: ["text"],
+                                        types: model.types || ["text"],
+                                        caps: model.caps || {},
                                         enabled: model.enabled || false,
                                         editable: true,
                                     });
@@ -350,6 +355,7 @@ export const modelStore = defineStore("model", {
                 name: model.name || "",
                 group: model.group || "",
                 types: model.types || ["text"],
+                caps: model.caps || {},
                 enabled: true,
             };
             provider.data.models.unshift(m as any);
@@ -381,6 +387,9 @@ export const modelStore = defineStore("model", {
                 }
                 if ("types" in model) {
                     m.types = model.types || ["text"];
+                }
+                if ("caps" in model) {
+                    m.caps = model.caps || {};
                 }
                 if ("enabled" in model) {
                     m.enabled = model.enabled as boolean;

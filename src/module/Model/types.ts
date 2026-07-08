@@ -2,12 +2,19 @@ export type ProviderType = "openai"; // | 'anthropic' | 'gemini' | 'qwenlm' | 'a
 
 export type ModelType = "text"; // | 'vision' | 'embedding' | 'reasoning' | 'function_calling'
 
+/** 模型能力标识 */
+export type ModelCaps = {
+    vision?: boolean; // 视觉识别能力（图片理解）
+    tools?: boolean; // 工具调用能力（Function Calling）
+};
+
 export type Model = {
     id: string;
     provider: string;
     name: string;
     group: string;
     types: ModelType[];
+    caps?: ModelCaps;
     enabled: boolean;
     editable: boolean;
     rate?: number;

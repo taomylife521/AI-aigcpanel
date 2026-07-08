@@ -8,7 +8,19 @@ type ModelRecord = {
     providerTitle: string;
     modelId: string;
     modelName: string;
+    caps?: {
+        vision?: boolean;
+        tools?: boolean;
+    };
 };
+
+const props = defineProps({
+    filter: {
+        type: Function as unknown as () => (model: ModelRecord) => boolean,
+        default: null,
+    },
+});
+
 const model = useModelStore();
 const availableModels = computed(() => {
     const models: ModelRecord[] = [];
@@ -20,12 +32,17 @@ const availableModels = computed(() => {
             if (!m.enabled) {
                 continue;
             }
-            models.push({
+            const record: ModelRecord = {
                 providerId: p.id,
                 providerTitle: p.title,
                 modelId: m.id,
                 modelName: m.name,
-            } as ModelRecord);
+                caps: m.caps,
+            };
+            if (props.filter && !props.filter(record)) {
+                continue;
+            }
+            models.push(record);
         }
     }
     return models;
@@ -103,7 +120,7 @@ defineExpose({
             v-for="p in availableModels"
             :value="p.providerId + '|' + p.modelId"
         >
-            <div class="flex items-center">
+            <div class="flex items-center gap-1">
                 <div class="mr-1">
                     <a-avatar
                         :image-url="getModelLogo(p.modelId)"
@@ -119,6 +136,16 @@ defineExpose({
                 <div>
                     {{ p.modelName }}
                 </div>
+                <icon-eye
+                    v-if="p.caps?.vision"
+                    :title="$t('model.capVision')"
+                    class="text-blue-500 text-sm"
+                />
+                <icon-tool
+                    v-if="p.caps?.tools"
+                    :title="$t('model.capTools')"
+                    class="text-green-500 text-sm"
+                />
             </div>
         </a-option>
     </a-select>

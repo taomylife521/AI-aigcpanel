@@ -16,6 +16,10 @@ const data = ref({
     id: "",
     name: "",
     group: "",
+    caps: {
+        vision: false,
+        tools: false,
+    },
 });
 watch(
     () => data.value.id,
@@ -28,6 +32,7 @@ const show = () => {
     data.value.id = "";
     data.value.name = "";
     data.value.group = "";
+    data.value.caps = { vision: false, tools: false };
     visible.value = true;
 };
 const doSubmit = () => {
@@ -80,6 +85,22 @@ defineExpose({
                         v-model:model-value="data.group"
                         :placeholder="$t('placeholder.chatgpt')"
                     />
+                </a-form-item>
+                <a-form-item :label="$t('model.capability')" name="caps">
+                    <div class="flex gap-4">
+                        <a-checkbox v-model="data.caps.vision">
+                            <template #checkbox-icon>
+                                <icon-eye />
+                            </template>
+                            {{ $t("model.capVision") }}
+                        </a-checkbox>
+                        <a-checkbox v-model="data.caps.tools">
+                            <template #checkbox-icon>
+                                <icon-tool />
+                            </template>
+                            {{ $t("model.capTools") }}
+                        </a-checkbox>
+                    </div>
                 </a-form-item>
             </a-form>
         </div>

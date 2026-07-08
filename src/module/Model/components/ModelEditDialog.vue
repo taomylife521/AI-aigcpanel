@@ -17,18 +17,31 @@ const data = ref({
     id: "",
     name: "",
     group: "",
+    caps: {
+        vision: false,
+        tools: false,
+    },
 });
 const show = (model: Model) => {
     data.value.id = model.id;
     data.value.name = model.name;
     data.value.group = model.group;
+    data.value.caps = {
+        vision: model.caps?.vision || false,
+        tools: model.caps?.tools || false,
+    };
     visible.value = true;
 };
 const doSubmit = () => {
     if (!data.value.id) {
         return;
     }
-    modelStore.modelEdit(props.provider.id, data.value);
+    modelStore.modelEdit(props.provider.id, {
+        id: data.value.id,
+        name: data.value.name,
+        group: data.value.group,
+        caps: data.value.caps,
+    });
     visible.value = false;
 };
 defineExpose({
@@ -76,6 +89,22 @@ defineExpose({
                         v-model:model-value="data.group"
                         :placeholder="$t('placeholder.chatgpt')"
                     />
+                </a-form-item>
+                <a-form-item :label="$t('model.capability')" name="caps">
+                    <div class="flex gap-4">
+                        <a-checkbox v-model="data.caps.vision">
+                            <template #checkbox-icon>
+                                <icon-eye />
+                            </template>
+                            {{ $t("model.capVision") }}
+                        </a-checkbox>
+                        <a-checkbox v-model="data.caps.tools">
+                            <template #checkbox-icon>
+                                <icon-tool />
+                            </template>
+                            {{ $t("model.capTools") }}
+                        </a-checkbox>
+                    </div>
                 </a-form-item>
             </a-form>
         </div>
