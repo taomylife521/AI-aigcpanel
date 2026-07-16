@@ -1,11 +1,18 @@
 const common = require("./common.cjs");
 
-// electron-builder arch → 目录命名映射
-const ARCH_MAP = { x64: "x86", arm64: "arm64", ia32: "x86" };
+// electron-builder 的 Arch 枚举值/字符串 → 目录命名映射
+// Arch 枚举: ia32=0, x64=1, armv7l=2, arm64=3, universal=4
+const ARCH_MAP = {
+    // 字符串 key
+    x64: "x86", arm64: "arm64", ia32: "x86",
+    // 数字枚举 key
+    0: "x86", 1: "x86", 3: "arm64",
+};
 
 exports.default = async function (context) {
     // 使用 context.arch（目标架构）而非 process.arch（构建机架构），以支持交叉编译
-    const targetArch = context.arch || common.platformArch();
+    // 注意: Arch.ia32=0 是 falsy 值，必须用 != null 判断
+    const targetArch = context.arch != null ? context.arch : common.platformArch();
     const platformName = common.platformName();
     const platformArch = ARCH_MAP[targetArch] || targetArch;
     const name = platformName + "-" + platformArch;
