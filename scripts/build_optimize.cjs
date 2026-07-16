@@ -1,19 +1,16 @@
 const common = require("./common.cjs");
 
-console.log("BuildOptimize", {
-    name: common.platformName(),
-    arch: common.platformArch(),
-});
+// electron-builder arch → 目录命名映射
+const ARCH_MAP = { x64: "x86", arm64: "arm64", ia32: "x86" };
 
 exports.default = async function (context) {
-    console.log("BuildOptimize.output", {
-        context: context,
-        root: context.appOutDir,
-    });
-    // copy extra electron/resources/extra/[name]-[arch] to extra
+    // 使用 context.arch（目标架构）而非 process.arch（构建机架构），以支持交叉编译
+    const targetArch = context.arch || common.platformArch();
     const platformName = common.platformName();
-    const platformArch = common.platformArch();
+    const platformArch = ARCH_MAP[targetArch] || targetArch;
     const name = platformName + "-" + platformArch;
+
+    console.log("BuildOptimize", { platformName, platformArch, targetArch, name });
 
     const srcDir = `electron/resources/extra/${name}`;
     let destDir = null;
