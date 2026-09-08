@@ -2,8 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"net/http"
-	"net/url"
 
 	"aigcpanel-cli/internal"
 
@@ -34,12 +32,13 @@ Examples:
 		if serverComfyuiListServer == "" {
 			return fmt.Errorf("--server is required (format name|version, version optional)")
 		}
-		urlPath := "/api/server/workflows?server=" + url.QueryEscape(serverComfyuiListServer)
 		cfg, err := internal.LoadAuthConfig()
 		if err != nil {
 			return err
 		}
-		result, err := internal.DoRequestMethod(cfg, http.MethodGet, urlPath, nil)
+		result, err := internal.DoRequest(cfg, "/api/server/workflows", map[string]any{
+			"server": serverComfyuiListServer,
+		})
 		if err != nil {
 			return err
 		}

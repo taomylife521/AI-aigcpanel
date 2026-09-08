@@ -3,8 +3,6 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"net/url"
 	"os"
 	"strings"
 
@@ -51,8 +49,9 @@ Examples:
 		if err != nil {
 			return err
 		}
-		urlPath := "/api/server/log?server=" + url.QueryEscape(serverKey)
-		result, err := internal.DoRequestMethod(cfg, http.MethodGet, urlPath, nil)
+		result, err := internal.DoRequest(cfg, "/api/server/log", map[string]any{
+			"server": serverKey,
+		})
 		if err != nil {
 			return err
 		}

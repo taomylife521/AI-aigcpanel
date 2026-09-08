@@ -2,6 +2,8 @@
 import { onBeforeUnmount, onMounted, ref } from "vue";
 import { t } from "../../lang";
 import { testActionSet, testActionUnset } from "../../utils/test";
+import MarkdownDocViewer from "../common/MarkdownDocViewer.vue";
+import cliDocContent from "../../docs/cli-doc.md?raw";
 
 const platform = window.$mapi.app.platformName() as "win" | "osx" | "linux";
 
@@ -368,190 +370,16 @@ const doInstall = async () => {
         <!-- 完整文档弹窗 -->
         <a-modal
             v-model:visible="docVisible"
-            :width="'min(800px, 90vw)'"
+            :width="'min(900px, 92vw)'"
             :footer="false"
             title-align="start"
+            :body-style="{ padding: '0', height: 'calc(100vh - 12rem)' }"
+            :modal-style="{ 'max-height': 'calc(100vh - 4rem)' }"
         >
             <template #title
                 ><div class="font-bold">CLI 工具完整文档</div></template
             >
-            <div
-                class="p-4 space-y-6 text-sm overflow-y-auto"
-                style="max-height: calc(100vh - 15rem)"
-            >
-                <div>
-                    <div class="font-bold text-base mb-2">命令列表</div>
-                    <table class="w-full border-collapse">
-                        <thead>
-                            <tr class="bg-gray-100 dark:bg-gray-800">
-                                <th
-                                    class="text-left p-2 border border-gray-200 dark:border-gray-700"
-                                >
-                                    命令
-                                </th>
-                                <th
-                                    class="text-left p-2 border border-gray-200 dark:border-gray-700"
-                                >
-                                    说明
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td
-                                    class="p-2 border border-gray-200 dark:border-gray-700 font-mono"
-                                >
-                                    version
-                                </td>
-                                <td
-                                    class="p-2 border border-gray-200 dark:border-gray-700"
-                                >
-                                    查看 CLI 版本号
-                                </td>
-                            </tr>
-                            <tr>
-                                <td
-                                    class="p-2 border border-gray-200 dark:border-gray-700 font-mono"
-                                >
-                                    serverList
-                                </td>
-                                <td
-                                    class="p-2 border border-gray-200 dark:border-gray-700"
-                                >
-                                    列出已安装的 AI 模型
-                                </td>
-                            </tr>
-                            <tr>
-                                <td
-                                    class="p-2 border border-gray-200 dark:border-gray-700 font-mono"
-                                >
-                                    tools
-                                </td>
-                                <td
-                                    class="p-2 border border-gray-200 dark:border-gray-700"
-                                >
-                                    调用内置工具并等待结果
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div>
-                    <div class="font-bold text-base mb-2">tools 命令参数</div>
-                    <div
-                        class="bg-gray-100 dark:bg-gray-800 rounded p-3 font-mono mb-2"
-                    >
-                        aigcpanel tools --name &lt;工具类型&gt; --param
-                        '{"参数名":"值",...}'
-                    </div>
-                    <table class="w-full border-collapse">
-                        <thead>
-                            <tr class="bg-gray-100 dark:bg-gray-800">
-                                <th
-                                    class="text-left p-2 border border-gray-200 dark:border-gray-700"
-                                >
-                                    参数
-                                </th>
-                                <th
-                                    class="text-left p-2 border border-gray-200 dark:border-gray-700"
-                                >
-                                    说明
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td
-                                    class="p-2 border border-gray-200 dark:border-gray-700 font-mono"
-                                >
-                                    --name
-                                </td>
-                                <td
-                                    class="p-2 border border-gray-200 dark:border-gray-700"
-                                >
-                                    必填，工具类型名称
-                                </td>
-                            </tr>
-                            <tr>
-                                <td
-                                    class="p-2 border border-gray-200 dark:border-gray-700 font-mono"
-                                >
-                                    --param
-                                </td>
-                                <td
-                                    class="p-2 border border-gray-200 dark:border-gray-700"
-                                >
-                                    工具参数 JSON 字符串，作为 modelConfig 传入
-                                </td>
-                            </tr>
-                            <tr>
-                                <td
-                                    class="p-2 border border-gray-200 dark:border-gray-700 font-mono"
-                                >
-                                    --taskId / --stage
-                                </td>
-                                <td
-                                    class="p-2 border border-gray-200 dark:border-gray-700"
-                                >
-                                    继续暂停的任务时使用
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div>
-                    <div class="font-bold text-base mb-2">使用示例</div>
-                    <div class="space-y-3">
-                        <div>
-                            <div class="text-gray-500 mb-1">查看版本</div>
-                            <div
-                                class="bg-gray-100 dark:bg-gray-800 rounded p-2 font-mono"
-                            >
-                                aigcpanel version
-                            </div>
-                        </div>
-                        <div>
-                            <div class="text-gray-500 mb-1">查看模型列表</div>
-                            <div
-                                class="bg-gray-100 dark:bg-gray-800 rounded p-2 font-mono"
-                            >
-                                aigcpanel serverList
-                            </div>
-                        </div>
-                        <div v-for="doc in cliToolsDocs" :key="doc.biz">
-                            <div class="text-gray-500 mb-1">
-                                {{ doc.title }}（{{ doc.biz }}）
-                            </div>
-                            <div
-                                class="bg-gray-100 dark:bg-gray-800 rounded p-2 font-mono break-all"
-                            >
-                                {{ doc.example }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="font-bold text-base mb-2">认证配置</div>
-                    <div class="text-gray-500">
-                        CLI 工具通过读取本地配置文件与 AIGCPanel
-                        服务通信，配置文件在启动 AIGCPanel 后自动生成：
-                    </div>
-                    <div
-                        class="bg-gray-100 dark:bg-gray-800 rounded p-2 font-mono mt-2"
-                    >
-                        <template v-if="platform === 'osx'"
-                            >~/Library/Application
-                            Support/aigcpanel/cli-auth.json</template
-                        >
-                        <template v-else-if="platform === 'linux'"
-                            >~/.config/aigcpanel/cli-auth.json</template
-                        >
-                        <template v-else
-                            >%APPDATA%\aigcpanel\cli-auth.json</template
-                        >
-                    </div>
-                </div>
-            </div>
+            <MarkdownDocViewer :content="cliDocContent" />
         </a-modal>
     </div>
 </template>

@@ -335,8 +335,8 @@ const buildTaskTitle = (funcName: string, param: any): string => {
     }
 };
 
-// ── GET /api/server/list ─────────────────────────────────────────────────
-router.get(
+// ── POST /api/server/list ────────────────────────────────────────────────
+router.post(
     "/list",
     asyncHandler(async (_req: Request, res: Response) => {
         const servers = await getInstalledServers();
@@ -562,12 +562,12 @@ router.post(
     }),
 );
 
-// ── GET /api/server/log ──────────────────────────────────────────────────
+// ── POST /api/server/log ─────────────────────────────────────────────────
 // 查看模型服务日志（logs 目录中 {name}_{version}_*.log 最新文件，最多返回后 100KB）
-router.get(
+router.post(
     "/log",
     asyncHandler(async (req: Request, res: Response) => {
-        const { server } = req.query;
+        const { server } = req.body || {};
         if (!server) {
             sendJson(res, 400, { code: -1, msg: "Missing server" });
             return;
@@ -668,12 +668,12 @@ router.post(
     }),
 );
 
-// ── GET /api/server/workflows ────────────────────────────────────────────
+// ── POST /api/server/workflows ───────────────────────────────────────────
 // 获取 ComfyUI 模型的工作流列表（PRO 构建中 VIP 模式可用；读取 workflows/*/meta.json）
-router.get(
+router.post(
     "/workflows",
     asyncHandler(async (req: Request, res: Response) => {
-        const { server } = req.query;
+        const { server } = req.body || {};
         if (!server) {
             sendJson(res, 400, { code: -1, msg: "Missing server" });
             return;

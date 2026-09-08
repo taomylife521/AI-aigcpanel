@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"net/http"
 	"strings"
 
 	"aigcpanel-cli/internal"
@@ -26,7 +25,7 @@ Examples:
 		if err != nil {
 			return err
 		}
-		result, err := internal.DoRequestMethod(cfg, http.MethodGet, "/api/server/list", nil)
+		result, err := internal.DoRequest(cfg, "/api/server/list", nil)
 		if err != nil {
 			return err
 		}

@@ -4,6 +4,7 @@ import DataConfigDialogButton from "../components/common/DataConfigDialogButton.
 import SettingAbout from "../components/Setting/SettingAbout.vue";
 import SettingBasic from "../components/Setting/SettingBasic.vue";
 import SettingCli from "../components/Setting/SettingCli.vue";
+import SettingApi from "../components/Setting/SettingApi.vue";
 import SettingEnv from "../components/Setting/SettingEnv.vue";
 import { t } from "../lang";
 import { TabContentScroller } from "../lib/ui";
@@ -82,6 +83,12 @@ onUnmounted(() => {
                 <div class="text-base truncate">
                     <icon-computer />
                     {{ t("setting.cli") }}
+                </div>
+            </div>
+            <div data-section="api" class="p-2 rounded-lg mb-4 cursor-pointer">
+                <div class="text-base truncate">
+                    <icon-cloud />
+                    {{ t("setting.api") }}
                 </div>
             </div>
 
@@ -168,6 +175,17 @@ onUnmounted(() => {
                     </div>
                     <div>
                         <SettingCli />
+                    </div>
+                </div>
+                <div
+                    class="border-b border-solid border-gray-200 my-6 dark:border-gray-700"
+                ></div>
+                <div data-section="api" class="scroll-mt-4">
+                    <div class="text-base font-bold mb-4">
+                        {{ t("setting.api") }}
+                    </div>
+                    <div>
+                        <SettingApi />
                     </div>
                 </div>
                 <div
